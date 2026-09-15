@@ -348,6 +348,8 @@ def plot_ensemble_vs_google(ode_nc, google_csv, out_path, google_id=None,
     plt.close(fig)
 
     print(f"  FAST-ML mean peak={np.nanmax(ml_mean):.0f} top10%={np.nanmax(ml_top):.0f} | "
-          f"Google mean={np.nanmax(g_mean):.0f} top10%={np.nanmax(g_top):.0f}"
+          f"FAST mean={np.nanmax(fast_mean):.0f} top10%={np.nanmax(fast_top):.0f} | "
+          f"Google mean={np.nanmax(g_mean):.0f} top10%={np.nanmax(g_top):.0f} "
+          f"({len(g_by)} mem)"
           + (f" | obs={np.nanmax(obs[:n_obs]):.0f}" if obs is not None else ""))
     return png
