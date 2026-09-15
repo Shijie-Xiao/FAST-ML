@@ -20,7 +20,8 @@ RESULTS_DIR = REPO_ROOT / "results"
 
 DEFAULT_CKPT = CKPT_DIR / "twostream_final_d2.pth"
 #: Statistics over the 2003-2022 training storms, as used at training time and
-#: by the published evaluation. Regenerate with ``scripts/compute_spatial_stats.py``.
+#: by the published evaluation. Part of the model definition: the training
+#: storms are not released, so this file is committed rather than recomputed.
 DEFAULT_STATS = DATA_DIR / "spatial_stats_train2003_2022.pkl"
 DEFAULT_CD_NC = DATA_DIR / "Cd.nc"
 

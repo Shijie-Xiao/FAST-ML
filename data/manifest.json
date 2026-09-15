@@ -19,7 +19,7 @@
       "marker": "data/training_data/2024/AL782024_north_atlantic_MILTON/AL782024_north_atlantic_MILTON_spatial_1000km.pkl",
       "size": 2206935040,
       "sha256": "08cc1016a2fe2f153977c829951cc29ee1bf0c865c3e40d1960f49c0499c31c7",
-      "drive_id": "",
+      "drive_id": "185kvT66lTKnredMCAdzueV34XVR4HHiu",
       "url": "",
       "description": "19 storms x (dataset.pkl + spatial_1000km.pkl). Required to run the CNN in scripts/run_single_track.py. Extracts to data/training_data/2024/<storm>/ and the tar is deleted afterwards."
     },
