@@ -1,9 +1,22 @@
-# FAST-ML: A Hybrid Physics–Machine Learning Framework for Tropical Cyclone Intensity Forecasting
+<div align="center">
 
-[Shijie Xiao](https://shijie-xiao.github.io/)<sup>1</sup>, Jonathan Lin<sup>2</sup>,
-Thomas Ehrmann<sup>3</sup>, Ali Sarhadi<sup>1</sup>
+# FAST-ML
 
-<sup>1</sup> Georgia Tech &nbsp;·&nbsp; <sup>2</sup> Cornell &nbsp;·&nbsp; <sup>3</sup> Sandia National Laboratories
+### A Hybrid Physics–Machine Learning Framework for Tropical Cyclone Intensity Forecasting
+
+[Shijie Xiao](https://shijie-xiao.github.io/)<sup>1</sup> &nbsp;·&nbsp;
+Jonathan Lin<sup>2</sup> &nbsp;·&nbsp;
+Thomas Ehrmann<sup>3</sup> &nbsp;·&nbsp;
+Ali Sarhadi<sup>1</sup>
+
+<sup>1</sup>Georgia Tech &nbsp;&nbsp; <sup>2</sup>Cornell &nbsp;&nbsp; <sup>3</sup>Sandia National Laboratories
+
+[![Paper](https://img.shields.io/badge/paper-JAMES%20(submitted)-B31B1B)](#citation)
+[![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)](#reproduction)
+[![PyTorch](https://img.shields.io/badge/pytorch-2.0%2B-EE4C2C?logo=pytorch&logoColor=white)](requirements.txt)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+</div>
 
 Code and data for the manuscript submitted to *Journal of Advances in Modeling
 Earth Systems* (JAMES). Inference only: the training loop and the derivation of
@@ -45,6 +58,7 @@ from the archived NetCDF.
 ```bash
 python scripts/run_single_track.py --replot-only
 python scripts/plot_ensemble_vs_google.py --no-vent-panel
+python scripts/plot_figure3.py
 ```
 
 **Add the ensemble ventilation panels — 53 MB.**
@@ -88,7 +102,11 @@ reduction in knots.*
 Across all 224 North Atlantic storms of 2003-2024 that meet the evaluation
 criteria, FAST averages 18.20 kt and FAST-ML 13.87 kt, a reduction of 4.33 kt,
 with FAST-ML better on 179 of the 224. Per-storm numbers for every year are in
-`results/storm_metrics_all_years_NA.csv`.
+`results/storm_metrics_all_years_NA.csv`, and `scripts/plot_figure3.py` redraws
+the figure from that file — `--panels` emits the four panels as separate SVGs at
+manuscript scale. Scoring all 224 storms needs the full ERA5 archive, so the CSV
+is shipped rather than recomputed; only panel D falls inside the data released
+here.
 
 Panel D is the season reproduced here, and its numbers are bit-identical to
 those written by `run_single_track.py`. RMSE against the IBTrACS best track
@@ -252,11 +270,13 @@ fastml/
 scripts/
   run_single_track.py         Single-track hindcast driver
   plot_ensemble_vs_google.py  Ensemble case-study figures
+  plot_figure3.py             Figure 3, composed or as separate panels
   download_data.py            Fetches the externally hosted files
 ckpt/    Released weights (4.7 MB, 237 tensors, strict load)
 data/    Drag field, normalisation statistics, ensemble inputs, manifest
-img/     Manuscript figures, vector source plus PNG
-results/ Published NetCDF output and figures
+img/     Manuscript figures, vector source plus PNG; panels/ holds Figure 3
+         panel by panel for vector editing
+results/ Published NetCDF output, metrics and figures
 ```
 
 ## Data sources
