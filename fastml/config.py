@@ -65,8 +65,9 @@ T0_DECAY_HOURS = 24.0
 #: Storms must peak at or above this intensity to be evaluated.
 MIN_VMAX_KTS = 45.0
 #: Storms must have at least this many hours of forecast after the 45 kt
-#: threshold, so that every evaluated storm has a comparably long forecast.
-MIN_DURATION_H = 120
+#: threshold. This is the evaluation threshold used in the manuscript and
+#: admits the 12 storms shown in the 2024 test panel of Figure 3.
+MIN_DURATION_H = 72
 
 # ── ODE integration ──────────────────────────────────────────────────────────
 #: Heun sub-steps per 1 h output step.
