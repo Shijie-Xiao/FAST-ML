@@ -90,8 +90,11 @@ python scripts/run_single_track.py --replot-only
 python scripts/plot_ensemble_vs_google.py --no-vent-panel
 ```
 
-The regenerated single-track PNGs are byte-identical to the ones committed
-under `results/`.
+The regenerated figures match the ones committed under `results/`. On the same
+machine they come out byte-identical; across machines the anti-aliasing in
+matplotlib's rasteriser can differ by one greyscale level on a few dozen of the
+2.2 million pixels, which is invisible. The numbers behind the figures are not
+approximate: see the note on exactness below.
 
 ### Level 2 -- the published ensemble figures (about 53 MB, 2 minutes)
 
@@ -207,6 +210,43 @@ follows the physics: `S` is a shear quantity and `chi` an entropy deficit.
 Neither stream is recurrent -- both are per-timestep diagnostics -- which keeps
 the network from learning the observed intensity trajectory and forces all
 temporal evolution to come from the ODE.
+
+## How exact is the reproduction
+
+Verified by cloning this repository into an empty directory, fetching the hosted
+files, and rerunning everything:
+
+| Output | Agreement with the committed results |
+|---|---|
+| `results/single_track/netcdf/*.nc` | bit-identical, all 8 storms, every variable |
+| `results/single_track/storm_metrics.csv` | identical |
+| Ensemble peak and ventilation values in the legends | identical |
+| Figures | visually identical; see below |
+
+The NetCDF output and every number quoted in the manuscript are exact. The PNGs
+are byte-identical when regenerated on the same machine, but matplotlib's
+anti-aliasing is not bit-reproducible across machines: a fresh clone reproduced
+3 of the 8 single-track figures byte-for-byte and the other 5 differed by one
+greyscale level on 6 to 31 pixels out of 2.2 million. If you need to compare
+figures mechanically, compare the NetCDF instead.
+
+Two deliberate numerical choices are worth recording, because they make this
+code differ in the last digits from the internal version that produced the
+manuscript:
+
+- Track coordinates are kept in float64 throughout. The internal pipeline
+  briefly cast them to float32, which perturbs the Coriolis parameter and drag
+  lookup at the 1e-4 kt level in the final intensity. This version is the more
+  accurate of the two.
+- The `vp_kts` variable stored in the NetCDF is the median-filtered series that
+  the ODE is actually integrated with. The internal version reported the
+  unfiltered series alongside a filtered integration, which was misleading.
+
+Normalisation statistics are the one thing that cannot be derived from what is
+distributed here, because they come from the training set. They are therefore
+committed directly as `data/spatial_stats_train2003_2022.pkl` (under 1 KB), and
+`scripts/compute_spatial_stats.py` documents and regenerates them if you have
+the training archive.
 
 ## Data distribution
 
