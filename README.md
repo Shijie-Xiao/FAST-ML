@@ -301,7 +301,7 @@ scripts/
   download_data.py            Fetches the externally hosted files
 ckpt/   Released weights (4.7 MB, 237 tensors, strict load)
 data/   Drag field, normalisation statistics, ensemble inputs, manifest
-img/    Manuscript figures
+img/    Manuscript figures, vector source plus PNG for display
 results/ Published NetCDF output and figures
 ```
 
