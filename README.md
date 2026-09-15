@@ -22,8 +22,9 @@ What the paper contributes:
 - A hybrid design where the CNN diagnoses only ventilation and the ODE does all
   temporal integration, keeping the forecast physically constrained and the
   learned component interpretable.
-- A mean 4.6 kt RMSE reduction over pure FAST across the 2024 North Atlantic
-  test season, improving 10 of 12 storms, with no change to the dynamics.
+- A mean 4.3 kt RMSE reduction over pure FAST across 224 North Atlantic storms
+  from 2003 to 2024, improving 179 of them, and 4.6 kt over the 2024 test
+  season, all with no change to the dynamics.
 - Ensemble forecasts that beat Google WeatherLab FNV3 on recent rapidly
   intensifying hurricanes, where purely data-driven models damp the intensity
   tail.
@@ -84,8 +85,14 @@ marked. (B, C) Per-storm RMSE for the 2022 and 2023 validation seasons. (D) The
 2024 test season. Green is FAST, blue is FAST-ML; labels give the RMSE
 reduction in knots.*
 
-Panel D is the season reproduced here. RMSE against the IBTrACS best track over
-the full forecast period, in knots:
+Across all 224 North Atlantic storms of 2003-2024 that meet the evaluation
+criteria, FAST averages 18.20 kt and FAST-ML 13.87 kt, a reduction of 4.33 kt,
+with FAST-ML better on 179 of the 224. Per-storm numbers for every year are in
+`results/storm_metrics_all_years_NA.csv`.
+
+Panel D is the season reproduced here, and its numbers are bit-identical to
+those written by `run_single_track.py`. RMSE against the IBTrACS best track
+over the full forecast period, in knots:
 
 | Storm | Obs peak | FAST | FAST-ML | Gain |
 |---|---:|---:|---:|---:|
@@ -106,6 +113,10 @@ the full forecast period, in knots:
 Bias, correlation and peak intensity per storm are in
 `results/single_track/storm_metrics.csv`; the full time series are in
 `results/single_track/netcdf/`.
+
+Panels A to C cover the training and validation years, whose ERA5 inputs are
+not distributed, so they cannot be regenerated from this release; panel D can,
+and is the panel the released code is scored on.
 
 ## Ensemble forecasting
 
