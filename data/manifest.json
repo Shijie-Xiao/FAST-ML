@@ -1,0 +1,47 @@
+{
+  "_comment": [
+    "Large inputs hosted outside git, fetched by scripts/download_data.py.",
+    "Fill in 'drive_id' with the Google Drive file id (the FILE_ID in a",
+    "https://drive.google.com/file/d/FILE_ID/view link), or set 'url' to any",
+    "direct HTTP(S) download. Sizes and SHA-256 sums are verified after every",
+    "download so a truncated transfer cannot silently change the results.",
+    "",
+    "Nothing here is needed to redraw the published figures: those come from",
+    "results/single_track/netcdf/ via `run_single_track.py --replot-only`."
+  ],
+  "files": [
+    {
+      "name": "2024 North Atlantic ERA5 storm archive",
+      "group": "single_track",
+      "target": "data/fastml_training_data_2024_NA.tar",
+      "archive": true,
+      "extract_to": "data/training_data",
+      "marker": "data/training_data/2024/AL782024_north_atlantic_MILTON/AL782024_north_atlantic_MILTON_spatial_1000km.pkl",
+      "size": 2206935040,
+      "sha256": "08cc1016a2fe2f153977c829951cc29ee1bf0c865c3e40d1960f49c0499c31c7",
+      "drive_id": "",
+      "url": "",
+      "description": "19 storms x (dataset.pkl + spatial_1000km.pkl). Required to run the CNN in scripts/run_single_track.py. Extracts to data/training_data/2024/<storm>/ and the tar is deleted afterwards."
+    },
+    {
+      "name": "chi_s_flossie.nc",
+      "group": "ensemble",
+      "target": "data/ensemble/flossie/chi_s_flossie.nc",
+      "size": 18012554,
+      "sha256": "716f6b556ca3cc1d455ef0fdcbd37b938547468c65aa786c607d24199131cdbf",
+      "drive_id": "",
+      "url": "",
+      "description": "Per-member chi and S for the 492-member Flossie ensemble. Supplies the ventilation panel of the Flossie figure; the intensity panel works without it."
+    },
+    {
+      "name": "chi_s_priscilla.nc",
+      "group": "ensemble",
+      "target": "data/ensemble/priscilla/chi_s_priscilla.nc",
+      "size": 36589310,
+      "sha256": "7e12bfb29480d7a3e861c7c7fff00f66304e88658de3b0474bff56642934a1c4",
+      "drive_id": "",
+      "url": "",
+      "description": "Per-member chi and S for the Priscilla ensemble (1000 members archived; the first 460 were integrated and are the ones plotted). Supplies the ventilation panel of the Priscilla figure."
+    }
+  ]
+}
