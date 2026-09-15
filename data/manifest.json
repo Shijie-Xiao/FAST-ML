@@ -29,7 +29,7 @@
       "target": "data/ensemble/flossie/chi_s_flossie.nc",
       "size": 18012554,
       "sha256": "716f6b556ca3cc1d455ef0fdcbd37b938547468c65aa786c607d24199131cdbf",
-      "drive_id": "",
+      "drive_id": "1GvGKTc2i2-kBn7d6DMwzEN8PsVZayGF1",
       "url": "",
       "description": "Per-member chi and S for the 492-member Flossie ensemble. Supplies the ventilation panel of the Flossie figure; the intensity panel works without it."
     },
@@ -39,9 +39,10 @@
       "target": "data/ensemble/priscilla/chi_s_priscilla.nc",
       "size": 36589310,
       "sha256": "7e12bfb29480d7a3e861c7c7fff00f66304e88658de3b0474bff56642934a1c4",
-      "drive_id": "",
+      "drive_id": "1fHFjK5JrulwUUiM7FotSCiJa8qgP_R4F",
       "url": "",
       "description": "Per-member chi and S for the Priscilla ensemble (1000 members archived; the first 460 were integrated and are the ones plotted). Supplies the ventilation panel of the Priscilla figure."
     }
-  ]
+  ],
+  "drive_folder": "https://drive.google.com/drive/folders/1xS8JN65WVqhkvLeBnrNZBRg47XE4lIUf"
 }

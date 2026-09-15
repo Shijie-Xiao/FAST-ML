@@ -1,11 +1,9 @@
 # FAST-ML: A Hybrid Physics–Machine Learning Framework for Tropical Cyclone Intensity Forecasting
 
-Shijie Xiao<sup>1,4</sup>, Jonathan Lin<sup>2</sup>, Thomas Ehrmann<sup>3</sup>, Ali Sarhadi<sup>1,4</sup>
+[Shijie Xiao](https://shijie-xiao.github.io/)<sup>1</sup>, Jonathan Lin<sup>2</sup>,
+Thomas Ehrmann<sup>3</sup>, Ali Sarhadi<sup>1</sup>
 
-<sup>1</sup> School of Earth and Atmospheric Sciences, Georgia Institute of Technology, Atlanta, GA, USA
-<sup>2</sup> Department of Earth and Atmospheric Sciences, Cornell University, Ithaca, NY, USA
-<sup>3</sup> Sandia National Laboratories, Albuquerque, NM, USA
-<sup>4</sup> School of Interactive Computing, Georgia Institute of Technology, Atlanta, GA, USA
+<sup>1</sup> Georgia Tech &nbsp;·&nbsp; <sup>2</sup> Cornell &nbsp;·&nbsp; <sup>3</sup> Sandia National Laboratories
 
 Code and data accompanying the manuscript submitted to *Journal of Advances in
 Modeling Earth Systems* (JAMES). This is an **inference-only** release: it
@@ -227,11 +225,20 @@ and MSLP that the CNN consumes). `download_data.py` checks size and SHA-256
 after each transfer, so a truncated download fails loudly rather than quietly
 changing the results.
 
-Normalisation statistics are the one thing that cannot be derived from what is
-distributed here, because they come from the training set. They are committed
-directly as `data/spatial_stats_train2003_2022.pkl`, and
-`scripts/compute_spatial_stats.py` documents and regenerates them if you have
-the training archive.
+**Training data is deliberately not distributed.** The hosted archive contains
+only the 2024 North Atlantic test season, which is what the published
+single-track results are scored on. The 2003-2022 training storms are not
+released.
+
+One consequence is worth being explicit about: the normalisation statistics are
+derived from the training set and therefore cannot be recomputed from anything
+distributed here. They are part of the model definition — change them and the
+predictions change — so rather than ask you to take them on trust, the file
+itself is committed (`data/spatial_stats_train2003_2022.pkl`, under 1 KB) and
+the exact procedure that produced it is published as
+`scripts/compute_spatial_stats.py`. That script is provenance, not a step in the
+reproduction path: it needs the training archive and will not run without it.
+Nothing you are asked to run depends on it.
 
 ## Reproduction fidelity
 

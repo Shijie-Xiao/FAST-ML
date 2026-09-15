@@ -3,10 +3,15 @@
 """Recompute the spatial normalisation statistics from the training storms.
 
 The released ``data/spatial_stats_train2003_2022.pkl`` was produced by this
-script and is what ``run_single_track.py`` loads by default, so most users never
-need to run it. It is included because the statistics are part of the model
-definition -- change them and the predictions change -- and a reproduction
-package should not ask anyone to take them on trust.
+script and is what ``run_single_track.py`` loads by default.
+
+**This script cannot be run from the public release.** It needs the 2003-2022
+training storms, which are not distributed; only the 2024 North Atlantic test
+season is. It is published as the provenance of the statistics file: the
+statistics are part of the model definition, change them and the predictions
+change, so the exact procedure that produced them is stated here in code rather
+than left to be taken on trust. The file it produces is under 1 KB and is
+committed directly, so nothing in the reproduction path depends on running it.
 
 Statistics are a per-variable, per-level mean and standard deviation over the
 first ``--max-samples`` training storms, in the order
