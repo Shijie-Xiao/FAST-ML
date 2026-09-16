@@ -121,15 +121,12 @@ CASES = {
 MODEL_KEYS = {"fast": "fast_vmax_kts", "ml": "ml_vmax_kts"}
 MODEL_LABELS = {"fast": "FAST", "ml": "FAST-ML"}
 
-#: Raw (pre-sampling) GEFS 31-member tracks, as drawn by the reference
-#: visualize_strike_prob_75km.py via its lon_orig/lat_orig argument.
+#: Raw (pre-sampling) GEFS 31-member tracks, copied into the repo for
+#: reproducibility; drawn by the reference visualize_strike_prob_75km.py via
+#: its lon_orig/lat_orig argument.
 RAW_TRACKS = {
-    "flossie": Path("/pscratch/sd/s/sixao74/Deepmind/PINN/ensemble/"
-                    "ensemble_track_model/processed_kwbc_flossie/flossie/"
-                    "flossie_20250629T120000_raw.pkl"),
-    "priscilla": Path("/pscratch/sd/s/sixao74/Deepmind/PINN/ensemble/"
-                      "ensemble_track_model/processed_kwbc_priscilla/priscilla/"
-                      "priscilla_20251004T180000_raw.pkl"),
+    "flossie": ENSEMBLE_DIR / "flossie" / "gefs_raw_31members_20250629T120000.pkl",
+    "priscilla": ENSEMBLE_DIR / "priscilla" / "gefs_raw_31members_20251004T180000.pkl",
 }
 
 
@@ -539,7 +536,14 @@ def _mean_track(tracks):
 
 
 def plot_probability_maps(prob, storm, init_time, model_label, out_path,
-                          tracks=None, n_spaghetti=200, dpi=170):
+                          tracks=None, dpi=170):
+    """Wind-speed exceedance probability panels (strike_probability.py style).
+
+    If ``tracks`` is given (raw 31-member GEFS), they are drawn as thin black
+    spaghetti (no ensemble mean), and every panel is zoomed to the track
+    strike map domain (track extent +/- 1 degree) instead of the full
+    wind-probability grid.
+    """
     thresholds = prob["thresholds"]
     ncols, nrows = 3, int(np.ceil(len(thresholds) / 3))
     # figure geometry identical to Reproduce/strike_probability.py
@@ -549,10 +553,11 @@ def plot_probability_maps(prob, storm, init_time, model_label, out_path,
     cmap = LinearSegmentedColormap.from_list("prob_cmap", PROB_COLORS, N=100)
     lon_grid, lat_grid = prob["lon"], prob["lat"]
 
-    mean_lon = mean_lat = None
-    if tracks is not None:
-        mean_lon, mean_lat = _mean_track(tracks)
-        lon180 = wrap180(tracks[0])
+    # zoom domain = track-strike domain (track extent +/- 1 degree)
+    lon180 = wrap180(tracks[0]) if tracks is not None else lon_grid
+    lat_tr = tracks[1] if tracks is not None else lat_grid
+    zoom = [np.nanmin(lon180) - 1.0, np.nanmax(lon180) + 1.0,
+            np.nanmin(lat_tr) - 1.0, np.nanmax(lat_tr) + 1.0]
 
     cf = None
     for idx, kt in enumerate(thresholds):
@@ -568,17 +573,13 @@ def plot_probability_maps(prob, storm, init_time, model_label, out_path,
                    transform=ccrs.PlateCarree())
         _base_map(ax, lon_grid, lat_grid)
 
-        if tracks is not None:                     # raw GEFS spaghetti + mean
-            for m in range(min(n_spaghetti, lon180.shape[0])):
-                mask = np.isfinite(lon180[m]) & np.isfinite(tracks[1][m])
-                ax.plot(lon180[m, mask], tracks[1][m][mask], color="0.35",
-                        lw=0.3, alpha=0.25, transform=ccrs.PlateCarree(),
-                        zorder=4)
-            ax.plot(mean_lon, mean_lat, color="k", lw=1.8, ls="--",
-                    transform=ccrs.PlateCarree(), zorder=7, label="Ens. mean")
-            ax.plot(mean_lon[:1], mean_lat[:1], "k*", ms=13,
-                    transform=ccrs.PlateCarree(), zorder=8, label="Init")
-            ax.legend(loc="lower left", fontsize=8, framealpha=0.85)
+        if tracks is not None:                     # raw GEFS spaghetti only
+            for m in range(lon180.shape[0]):
+                mask = np.isfinite(lon180[m]) & np.isfinite(lat_tr[m])
+                ax.plot(lon180[m, mask], lat_tr[m, mask], color="black",
+                        lw=0.5, alpha=0.35, transform=ccrs.PlateCarree(),
+                        zorder=6)
+            ax.set_extent(zoom, crs=ccrs.PlateCarree())
         ax.set_title(f"{kt}-kt Wind Speed Probability", fontsize=14,
                      fontweight="bold", pad=10)
 
@@ -665,10 +666,9 @@ def plot_tracks(lon_tr, lat_tr, storm, model_label, init_time, out_path,
                 n_spaghetti=300, dpi=170):
     """Spaghetti track plot, styling copied from
     Reproduce/plot_fast_results_irma.py (gray '#B0B0B0' members lw=0.8
-    alpha=0.6, LAND '0.95'/OCEAN '0.98' alpha=0.8, black best-track-style
-    ensemble mean, title fontsize 18)."""
+    alpha=0.6, LAND '0.95'/OCEAN '0.98' alpha=0.8, title
+    fontsize 18). Only raw GEFS members - no ensemble mean, per user request."""
     lon180 = wrap180(lon_tr)
-    mean_lon, mean_lat = _mean_track((lon_tr, lat_tr))
 
     fig = plt.figure(figsize=(14, 10), dpi=dpi)
     ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
@@ -686,11 +686,10 @@ def plot_tracks(lon_tr, lat_tr, storm, model_label, init_time, out_path,
                    alpha=0.8, zorder=1)
 
     for m in range(min(n_spaghetti, lon180.shape[0])):
-        ax.plot(lon180[m], lat_tr[m], color="#B0B0B0", linewidth=0.8,
-                alpha=0.6, transform=ccrs.PlateCarree(), zorder=3)
-    # ensemble-mean track drawn like the best track of the reference figure
-    ax.plot(mean_lon, mean_lat, "k-", linewidth=2.5, alpha=0.95,
-            transform=ccrs.PlateCarree(), zorder=8, label="Ensemble Mean")
+        mask = np.isfinite(lon180[m]) & np.isfinite(lat_tr[m])
+        ax.plot(lon180[m, mask], lat_tr[m, mask], color="#B0B0B0",
+                linewidth=0.8, alpha=0.6, transform=ccrs.PlateCarree(), zorder=3)
+    # no ensemble-mean track: draw only the raw GEFS members
     ax.plot(lon180[0, 0], lat_tr[0, 0], "k*", ms=15,
             transform=ccrs.PlateCarree(), zorder=9, label="Init")
 
@@ -699,8 +698,7 @@ def plot_tracks(lon_tr, lat_tr, storm, model_label, init_time, out_path,
     gl.top_labels = False
     gl.right_labels = False
     ax.legend(loc="upper right", framealpha=0.9, fontsize=12)
-    ax.set_title(f"Track Trajectories ({storm}, {model_label}, "
-                 f"{lon_tr.shape[0]} members)",
+    ax.set_title(f"Track Trajectories ({storm}, raw GEFS {lon_tr.shape[0]} members)",
                  fontsize=18, fontweight="bold", pad=20)
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -782,10 +780,21 @@ def run_case(name, cfg, model_sel, data_dir, out_dir):
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    # raw 31-member GEFS tracks (pre-sampling) for drawing, as the reference
+    # script does via lon_orig/lat_orig
+    raw_pkl = RAW_TRACKS.get(name)
+    lon_raw, lat_raw = (None, None)
+    if raw_pkl and raw_pkl.exists():
+        lon_raw, lat_raw = load_raw_gefs_tracks(raw_pkl, max_days=STRIKE_MAX_DAYS)
+        if lon_raw is not None:
+            print(f"  loaded raw GEFS tracks: {lon_raw.shape[0]} members "
+                  f"from {raw_pkl.name}")
+    draw_tracks = (lon_raw, lat_raw) if lon_raw is not None else (lon, lat)
+
     # ── Figure 1: 75-km track strike probability (shared GEFS tracks) ───────
     print("  [Track strike probability]")
     strike = compute_track_strike_probability(lon, lat, time_h)
-    plot_track_strike_map(strike, (lon, lat), cfg["storm"], cfg["init_time"],
+    plot_track_strike_map(strike, draw_tracks, cfg["storm"], cfg["init_time"],
                           out_dir / f"track_strike_{name}")
     save_strike_netcdf(strike, cfg["storm"],
                        out_dir / f"strike_prob_75km_{name}.nc")
@@ -801,9 +810,9 @@ def run_case(name, cfg, model_sel, data_dir, out_dir):
         prob_by_model[key] = prob
         plot_probability_maps(prob, cfg["storm"], cfg["init_time"], label,
                               out_dir / f"strike_probability_{name}_{key}",
-                              tracks=(lon, lat))
-        plot_tracks(lon, lat, cfg["storm"], label, cfg["init_time"],
-                    out_dir / f"tracks_{name}_{key}.png")
+                              tracks=draw_tracks)
+        plot_tracks(*draw_tracks, cfg["storm"], label, cfg["init_time"],
+                    out_dir / f"tracks_{name}_{key}.png", n_spaghetti=31)
 
     save_prob_netcdf(prob_by_model, cfg["storm"],
                      out_dir / f"strike_probability_{name}.nc")
