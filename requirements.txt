@@ -13,3 +13,5 @@ einops>=0.6
 
 # Optional: only needed by scripts/download_data.py for Google Drive hosted files.
 gdown>=4.7
+# Optional: only needed by scripts/plot_strike_probability.py (strike maps).
+cartopy>=0.21

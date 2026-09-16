@@ -16,3 +16,8 @@ data/fastml_training_data_*.tar
 
 # Superseded normalisation statistics; see scripts/compute_spatial_stats.py.
 data/spatial_stats_2003_2021.pkl
+
+# Generated outputs (NetCDF, metrics, figures). Only the images referenced by
+# README.md are copied into img/ and tracked; everything else is local-only.
+results/
+
