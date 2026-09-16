@@ -13,25 +13,6 @@ Code and data for the manuscript submitted to *Journal of Advances in Modeling
 Earth Systems* (JAMES). Inference only: the training loop and the derivation of
 the ERA5 ventilation diagnostics are not part of this release.
 
-FAST predicts tropical cyclone intensity by integrating a coupled ODE for the
-axisymmetric wind `V` and a moisture variable `m`. Its dominant uncertainty is
-the **ventilation index** `chi * S`, the rate at which low entropy environmental
-air is stirred into the core, conventionally diagnosed from reanalysis. FAST-ML
-replaces that diagnosis with a two-stream CNN on storm-centred ERA5 fields and
-changes nothing else — same ODE, track, scalars, drag field and initialisation —
-so any difference in skill is attributable to the ventilation diagnosis alone.
-
-What the paper contributes:
-
-- A hybrid design where the CNN diagnoses only ventilation and the ODE does all
-  temporal integration, keeping the forecast physically constrained and the
-  learned component interpretable.
-- A mean 4.3 kt RMSE reduction over pure FAST across 224 North Atlantic storms
-  from 2003 to 2024, improving 179 of them, and 4.6 kt over the 2024 test
-  season, all with no change to the dynamics.
-- Ensemble forecasts that beat Google WeatherLab FNV3 on recent rapidly
-  intensifying hurricanes, where purely data-driven models damp the intensity
-  tail.
 
 ![FAST-ML framework](img/Figure_2.png)
 
