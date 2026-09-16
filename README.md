@@ -1,15 +1,6 @@
 <div align="center">
 
-# FAST-ML
-
-### A Hybrid Physics–Machine Learning Framework for Tropical Cyclone Intensity Forecasting
-
-[Shijie Xiao](https://shijie-xiao.github.io/)<sup>1</sup> &nbsp;·&nbsp;
-Jonathan Lin<sup>2</sup> &nbsp;·&nbsp;
-Thomas Ehrmann<sup>3</sup> &nbsp;·&nbsp;
-Ali Sarhadi<sup>1</sup>
-
-<sup>1</sup>Georgia Tech &nbsp;&nbsp; <sup>2</sup>Cornell &nbsp;&nbsp; <sup>3</sup>Sandia National Laboratories
+# FAST-ML: A Hybrid Physics–Machine Learning Framework for Tropical Cyclone Intensity Forecasting
 
 [![Paper](https://img.shields.io/badge/paper-JAMES%20(submitted)-B31B1B)](#citation)
 [![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)](#reproduction)
