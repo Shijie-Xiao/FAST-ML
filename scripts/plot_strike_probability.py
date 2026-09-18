@@ -137,6 +137,14 @@ RAW_TRACKS = {
     "beryl": ENSEMBLE_DIR / "gefs_raw_31members_20240629T000000.pkl",
 }
 
+#: IBTrACS best track (track_intensity_6h.csv from the PINN data tree,
+#: derived from IBTrACS v04r01 USA_LAT/USA_LON), overlaid on the strike maps.
+BEST_TRACKS = {
+    "flossie": ENSEMBLE_DIR / "besttrack_flossie.csv",
+    "priscilla": ENSEMBLE_DIR / "besttrack_priscilla.csv",
+    "beryl": ENSEMBLE_DIR / "besttrack_beryl.csv",
+}
+
 
 def load_raw_gefs_tracks(pkl_path, max_days=None):
     """Load the raw (pre-sampling) 31-member GEFS track ensemble.
@@ -172,6 +180,26 @@ def load_raw_gefs_tracks(pkl_path, max_days=None):
     for i, (lo, la) in enumerate(zip(lon_list, lat_list)):
         lon_o[i, :len(lo)], lat_o[i, :len(la)] = lo, la
     return lon_o, lat_o
+
+
+def load_best_track(csv_path, t0=None, max_days=None):
+    """Load the IBTrACS best track (track_intensity_6h.csv) as (lon, lat).
+
+    Optionally restricts to the window [t0, t0 + max_days] so the overlay
+    matches the forecast window of the strike maps.
+    """
+    import pandas as pd
+    df = pd.read_csv(csv_path, parse_dates=["time"])
+    if t0 is not None:
+        t0 = pd.Timestamp(str(t0).replace(" UTC", ""))
+        df = df[df["time"] >= t0 - pd.Timedelta(hours=1)]
+    if max_days is not None:
+        t0_eff = pd.Timestamp(str(t0).replace(" UTC", "")) if t0 is not None else df["time"].iloc[0]
+        df = df[df["time"] <= t0_eff + pd.Timedelta(days=max_days)]
+    df = df.dropna(subset=["lat", "lon"]).sort_values("time")
+    lon = df["lon"].to_numpy(float)
+    lon[lon > 180] -= 360
+    return lon, df["lat"].to_numpy(float)
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -613,7 +641,7 @@ STRIKE_COLORS = ["#ffffff", "#cfe6f5", "#8dc1e0", "#5aa2c9", "#2f7f9f", "#c59d55
 
 
 def plot_track_strike_map(strike, tracks, storm, init_time, out_path,
-                          n_spaghetti=200, dpi=170):
+                          best_track=None, n_spaghetti=200, dpi=170):
     """75-km track strike-probability map, copied verbatim from
     Reproduce/track_model/visualize_strike_prob_75km.py::plot_strike_probability:
     white land/ocean, 21-colour ListedColormap, levels 0-100 step 5 with
@@ -624,6 +652,8 @@ def plot_track_strike_map(strike, tracks, storm, init_time, out_path,
     ``tracks`` = (lon, lat) of the raw 31-member GEFS ensemble, drawn as the
     thin black spaghetti (the reference plots lon_orig/lat_orig here); the
     probability field itself is computed from the full sampled ensemble.
+    ``best_track`` = optional (lon, lat) of the IBTrACS best track, drawn as a
+    solid black line on top of the spaghetti.
     """
     from matplotlib.colors import ListedColormap
 
@@ -647,6 +677,13 @@ def plot_track_strike_map(strike, tracks, storm, init_time, out_path,
         mask = np.isfinite(lon_o[i]) & np.isfinite(lat_o[i])
         ax.plot(lon_o[i, mask], lat_o[i, mask], color="black",
                 linewidth=0.5, alpha=0.35, transform=proj, zorder=3)
+
+    # IBTrACS best track: solid black, on top of the ensemble spaghetti
+    if best_track is not None:
+        bt_lon, bt_lat = best_track
+        ax.plot(bt_lon, bt_lat, color="black", linewidth=2.2, alpha=1.0,
+                transform=proj, zorder=5, label="IBTrACS best track")
+        ax.legend(loc="upper right", framealpha=0.9, fontsize=10)
 
     ax.add_feature(cfeature.COASTLINE, linewidth=0.6, zorder=4)
     ax.add_feature(cfeature.BORDERS, linewidth=0.4, zorder=4)
@@ -792,18 +829,38 @@ def run_case(name, cfg, model_sel, data_dir, out_dir):
     # script does via lon_orig/lat_orig
     raw_pkl = RAW_TRACKS.get(name)
     lon_raw, lat_raw = (None, None)
+    track_t0 = cfg["init_time"]          # fallback: the nominal init time
     if raw_pkl and raw_pkl.exists():
+        import pickle
+        with open(raw_pkl, "rb") as f:
+            raw_head = pickle.load(f)
+        forced = raw_head.get("forced_init_time")
+        if forced is not None:
+            track_t0 = forced.strftime("%Y-%m-%d %H:%M UTC")
         lon_raw, lat_raw = load_raw_gefs_tracks(raw_pkl, max_days=STRIKE_MAX_DAYS)
         if lon_raw is not None:
             print(f"  loaded raw GEFS tracks: {lon_raw.shape[0]} members "
-                  f"from {raw_pkl.name}")
+                  f"from {raw_pkl.name} (init {track_t0})")
     draw_tracks = (lon_raw, lat_raw) if lon_raw is not None else (lon, lat)
+
+    # IBTrACS best track, restricted to the same 5-day forecast window.
+    # Anchored to the raw-GEFS forced_init_time, which is the time the
+    # sampled/ODE tracks are actually aligned to (may differ from the
+    # nominal init_time, e.g. beryl: GEFS 00Z vs the 60-kt trigger at 18Z).
+    bt_csv = BEST_TRACKS.get(name)
+    best_track = None
+    if bt_csv and bt_csv.exists():
+        best_track = load_best_track(bt_csv, t0=track_t0,
+                                     max_days=STRIKE_MAX_DAYS)
+        print(f"  loaded best track: {len(best_track[0])} points "
+              f"from {bt_csv.name}")
 
     # ── Figure 1: 75-km track strike probability (shared GEFS tracks) ───────
     print("  [Track strike probability]")
     strike = compute_track_strike_probability(lon, lat, time_h)
     plot_track_strike_map(strike, draw_tracks, cfg["storm"], cfg["init_time"],
-                          out_dir / f"track_strike_{name}")
+                          out_dir / f"track_strike_{name}",
+                          best_track=best_track)
     save_strike_netcdf(strike, cfg["storm"],
                        out_dir / f"strike_prob_75km_{name}.nc")
 
