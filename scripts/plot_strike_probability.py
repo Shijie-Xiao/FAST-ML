@@ -116,6 +116,13 @@ CASES = {
         "lon_pad": 7.0,
         "lat_pad": 7.0,
     },
+    "beryl": {
+        "ode_nc": "ode_beryl_60kt_free.nc",
+        "storm": "Beryl",
+        "init_time": "2024-06-29 18:00 UTC",
+        "lon_pad": 7.0,
+        "lat_pad": 7.0,
+    },
 }
 
 MODEL_KEYS = {"fast": "fast_vmax_kts", "ml": "ml_vmax_kts"}
@@ -127,6 +134,7 @@ MODEL_LABELS = {"fast": "FAST", "ml": "FAST-ML"}
 RAW_TRACKS = {
     "flossie": ENSEMBLE_DIR / "flossie" / "gefs_raw_31members_20250629T120000.pkl",
     "priscilla": ENSEMBLE_DIR / "priscilla" / "gefs_raw_31members_20251004T180000.pkl",
+    "beryl": ENSEMBLE_DIR / "gefs_raw_31members_20240629T000000.pkl",
 }
 
 
