@@ -117,9 +117,9 @@ CASES = {
         "lat_pad": 7.0,
     },
     "beryl": {
-        "ode_nc": "ode_beryl_60kt_free.nc",
+        "ode_nc": "beryl/ode_beryl_vp1p10_free.nc",
         "storm": "Beryl",
-        "init_time": "2024-06-29 18:00 UTC",
+        "init_time": "2024-06-29 00:00 UTC",
         "lon_pad": 7.0,
         "lat_pad": 7.0,
     },

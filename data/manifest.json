@@ -24,6 +24,16 @@
       "description": "19 storms x (dataset.pkl + spatial_1000km.pkl). Required to run the CNN in scripts/run_single_track.py. Extracts to data/training_data/2024/<storm>/ and the tar is deleted afterwards."
     },
     {
+      "name": "chi_s_beryl.nc",
+      "group": "ensemble",
+      "target": "data/ensemble/beryl/chi_s_beryl.nc",
+      "size": 13195136,
+      "sha256": "6f7a29e64ca6294e1c0c50e835cf7abbc6c0fbfef050ddb105e50e68ffd1358e",
+      "drive_id": "",
+      "url": "",
+      "description": "Per-member chi and S for the 360-member Beryl ensemble. Supplies the ventilation panel of the Beryl figure; the intensity panel works without it."
+    },
+    {
       "name": "chi_s_flossie.nc",
       "group": "ensemble",
       "target": "data/ensemble/flossie/chi_s_flossie.nc",

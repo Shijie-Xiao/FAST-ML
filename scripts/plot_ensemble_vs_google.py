@@ -53,6 +53,16 @@ CASES = {
         "out_name": "priscilla_free_vs_google",
         "run_label": "free run",
     },
+    "beryl": {
+        "ode_nc": "beryl/ode_beryl_vp1p10_free.nc",
+        "google_csv": "beryl/FNV3_2024_06_29T00_00_paired.csv",
+        "chi_nc": "beryl/chi_s_beryl.nc",
+        "google_id": "AL022024",
+        "storm": "beryl",
+        "init_time": "2024-06-29 00:00",
+        "out_name": "beryl_free_vs_google",
+        "run_label": "free run",
+    },
 }
 
 
