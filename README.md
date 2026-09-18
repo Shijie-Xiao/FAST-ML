@@ -174,24 +174,6 @@ is not distributed — only the 2024 North Atlantic test season. The
 normalisation statistics are part of the model definition and are committed
 (`data/spatial_stats_train2003_2022.pkl`, under 1 KB).
 
-## Method
-
-- **Time axis.** The forecast starts when the best track first reaches 45 kt;
-  the preceding 48 h initialise the ODE.
-- **Initialisation.** Over the 48 h window `V` is nudged onto the observation
-  and the residual `F = observed acceleration − physics RHS` is recorded. From
-  `t_start` the integration is free, with the inherited forcing decaying as
-  `F * exp(−2 * (lead / 24 h)^2)`.
-- **Observation inversion.** Best-track winds include translation and
-  shear-induced asymmetry; observations are inverted to axisymmetric form
-  before use, and model output is converted back for scoring.
-- **Ventilation calibration.** Both paths apply the same mean-to-90th-percentile
-  factor and the same Atlantic ceiling, putting ERA5 and CNN ventilation
-  indices on one scale.
-- **Two streams.** `S` is diagnosed from (U, V, Z) and `chi` from (T, Q, SST,
-  MSLP). Both are per-timestep diagnostics, so all temporal evolution comes
-  from the ODE.
-
 ## Layout
 
 ```
