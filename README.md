@@ -10,8 +10,24 @@
 </div>
 
 Code and data for the manuscript submitted to *Journal of Advances in Modeling
-Earth Systems* (JAMES). Inference only: the training loop and the derivation of
+Earth Sciences* (JAMES). Inference only: the training loop and the derivation of
 the ERA5 ventilation diagnostics are not part of this release.
+
+**Research line.** FAST-ML is part of a broader research program on
+**machine learning for nonlinear physical and dynamical systems**: rather than
+replacing mechanistic models with black-box predictors, we keep the physical
+structure in the loop and learn systematic model discrepancies from
+large-scale environmental data — here, a physics-based tropical cyclone
+intensity ODE corrected by a CNN that reads multi-year, hourly, ~0.25° ERA5
+fields, extended to probabilistic ensembles for extreme-event risk.
+
+**Pipeline.** Atmospheric State → Environmental Feature Extraction → Physics
+Model + ML Correction → FAST-ML Forecast → Probabilistic Ensemble →
+Extreme-Event / Tail-Risk Analysis
+
+On the held-out 2024 North Atlantic hurricane season, FAST-ML reduces mean
+intensity RMSE from **15.42 kt to 10.78 kt** (−30.1% relative to the physics
+baseline), improving forecasts for 10 of 12 evaluated storms.
 
 ![FAST-ML framework](img/Figure_2.png)
 
