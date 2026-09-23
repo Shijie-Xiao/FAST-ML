@@ -2,15 +2,17 @@
 
 # FAST-ML: A Hybrid Physics–Machine Learning Framework for Tropical Cyclone Intensity Forecasting
 
-[![Paper](https://img.shields.io/badge/paper-JAMES%20(submitted)-B31B1B)](#citation)
+[![Paper](https://img.shields.io/badge/paper-arXiv.2609.25505-B31B1B)](https://arxiv.org/abs/2609.25505)
 [![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)](#reproduction)
 [![PyTorch](https://img.shields.io/badge/pytorch-2.0%2B-EE4C2C?logo=pytorch&logoColor=white)](requirements.txt)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 </div>
 
-Code and data for the manuscript submitted to *Journal of Advances in Modeling
-Earth Sciences* (JAMES). Inference only: the training loop and the derivation of
+Code and data for [FAST-ML: A Hybrid Physics–Machine Learning Framework
+for Tropical Cyclone Intensity Forecasting](https://arxiv.org/abs/2609.25505)
+(arXiv:2609.25505), submitted to *Journal of Advances in Modeling Earth
+Sciences* (JAMES). Inference only: the training loop and the derivation of
 the ERA5 ventilation diagnostics are not part of this release.
 
 **Research line.** FAST-ML is part of a broader research program on
@@ -195,13 +197,12 @@ forecasts.
 ## Citation
 
 ```bibtex
-@article{xiao_fastml,
+@article{xiao2026fastml,
   title   = {{FAST-ML}: A Hybrid Physics--Machine Learning Framework for
              Tropical Cyclone Intensity Forecasting},
   author  = {Xiao, Shijie and Lin, Jonathan and Ehrmann, Thomas and
              Sarhadi, Ali},
-  journal = {Journal of Advances in Modeling Earth Systems},
-  note    = {Submitted},
+  journal = {arXiv preprint arXiv:2609.25505},
   year    = {2026}
 }
 ```
